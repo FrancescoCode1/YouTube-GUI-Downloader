@@ -7,9 +7,12 @@ import pytube
 import os
 from qt_material import apply_stylesheet
 
+def resource_path(relative_path):
+  if hasattr(sys, '_MEIPASS'):
+      return os.path.join(sys._MEIPASS, relative_path)
+  return os.path.join(os.path.abspath('.'), relative_path)
 
-#Signals are used to pass data or states to the main thread. 
-#Finished is a state, error contains a touple defined below, result contains data returned by the function
+#Signals are used to pass data or states to the main thread. Finished is a state, error contains a touple defined below, result contains data returned by the function
 class WorkerSignals(QObject):
     finished = pyqtSignal()
     error = pyqtSignal(tuple)
@@ -55,7 +58,7 @@ class Ui_MainWindow(object):
         apply_stylesheet(app, theme='dark_red.xml')
         stylesheet = app.styleSheet()
         #override style sheet
-        with open('custom.css') as file:
+        with open(resource_path("./custom.css")) as file:
             app.setStyleSheet(stylesheet + file.read().format(**os.environ))
         self.threadpool = QThreadPool()
         print("Multithreading with maximum %d threads" % self.threadpool.maxThreadCount())
@@ -302,6 +305,8 @@ class Ui_MainWindow(object):
         if "playlist" in ytLink:
             p = pytube.Playlist(ytLink)
             return p.title
+        elif ytLink == "":
+            pass
         else:
             title = pytube.YouTube(ytLink)
             newtitle = title.streams[0].title
@@ -317,21 +322,30 @@ class Ui_MainWindow(object):
     def addToList(self, s):
         #ytLinkInput contains the youtube link
         ytLink = self.ytLinkInput.text()
-        #append array with the provided link
-        a.append(ytLink)
-        #print the array
-        print(a)
-        item = s
-        self.listWidget.addItem(item)
-        self.ytLinkInput.setText("")
+        if ytLink == "":
+            pass
+        else:
+            #append array with the provided link
+            a.append(ytLink)
+            #print the array
+            print(a)
+            item = s
+            self.listWidget.addItem(item)
+            self.ytLinkInput.setText("")
     """def progress(self, n):
         print("%d%% done" % n)"""
     #deletes current selected row in the widget on click of clear button
     def delete_it(self):
         clicked = self.listWidget.currentRow()
-        self.listWidget.takeItem(clicked)
-        a.pop(clicked)
-        print(a)
+        if clicked == -1:
+            pass
+
+        else:
+            self.listWidget.takeItem(clicked)
+            print(clicked)
+            a.pop(clicked)
+            print(a)
+        print("success")
 
     #clears all entries from the list widget
     def clear_it(self):
