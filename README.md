@@ -1,7 +1,7 @@
 # YouTube-GUI-Downloader
 pyQt5 implementation of yt-dlp
 
-##Work in progress
+## Work in progress
 This project is under development, bugs may occur. If you encounter any problems, please open an issue.
 
 This YouTube Download Tool is based on yt-dlp and only works if yt-dlp is in the same directory or in PATH.
