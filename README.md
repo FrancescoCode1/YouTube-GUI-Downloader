@@ -1,6 +1,8 @@
 # YouTube-GUI-Downloader
 pyQt5 implementation of yt-dlp
 
+__Make sure you have at least Python 3.10 as this code contains match case statements which have been added in version 3.10__
+
 ## Work in progress
 This project is under development, bugs may occur. If you encounter any problems, please open an issue.
 
