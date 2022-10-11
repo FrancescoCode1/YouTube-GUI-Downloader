@@ -6,7 +6,7 @@ import os
 import subprocess
 from qt_material import apply_stylesheet
 from design import Ui_MainWindow
-import getTitle
+import resolveTitle
 
 
 def resource_path(relative_path):
