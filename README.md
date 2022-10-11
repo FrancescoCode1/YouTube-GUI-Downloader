@@ -8,5 +8,8 @@ This project is under development, bugs may occur. If you encounter any problems
 
 This YouTube Download Tool is based on yt-dlp and only works if yt-dlp is in the same directory or in PATH.
 
+Current Issues:
+- Progress Bar doesnt work on playlists, as the for loop only iterates through one link and increases the counter, but a playlist is technically only one link.
+- Mp4 doesnt work
 
-![image](https://user-images.githubusercontent.com/71893290/194763469-670293bf-1755-4a03-a521-2c16c46dacb5.png)
+![YouTube_Downloader_v0 5_idkNk6aldf](https://user-images.githubusercontent.com/71893290/195176969-8f5cfeae-6759-49fe-884b-60cbaf7fc4c4.png)
