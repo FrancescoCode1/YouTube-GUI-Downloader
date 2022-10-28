@@ -6,7 +6,7 @@ import os
 import subprocess
 from qt_material import apply_stylesheet
 from design import Ui_MainWindow
-import resolveTitle
+import getTitle
 
 
 def resource_path(relative_path):
@@ -95,6 +95,21 @@ class DownloaderApp(QMainWindow):
         self.ui.rb3.toggled.connect(lambda: self.btnstate(self.ui.rb3))
         self.ui.ytLinkInput.returnPressed.connect(self.add)
 
+        self.ui.convertBtn.setStyleSheet("QPushButton" 
+                                         "{"
+                                         "color: red;"
+                                          "background-color: #0029fb;"
+                                          "border: 2px solid red;"
+                                          "border-radius: 4px;"
+                                          "height: {{36|density(density_scale, border=2)}}px;"
+                                        "}"
+                                         )
+        self.ui.convertBtn.setStyleSheet("QPushButton:pressed"
+                                         "{"
+                                         "color: white;"
+                                         "Background-color: white:"
+                                         "}")
+
     # check which button is pressed. the names of the button are also the formats so i save them as a string in an array
     def btnstate(self, b):
         if b.isChecked():
@@ -153,13 +168,14 @@ class DownloaderApp(QMainWindow):
     # Future Feature
     # warns if list contains a playlist
     def warn(self):
-        if any("playlist" in ab for ab in a):
+        if any("playlist" in ab for ab in a) or any("&list" in ab for ab in a):
             msg = QMessageBox()
             msg.setWindowTitle("Playlist detected")
             msg.setText("List contains 1 or more playlists continue?")
             msg.setStandardButtons(QMessageBox.Ok | QMessageBox.No)
             x = msg.exec_()
             return x
+
         else:
             worker = Worker(self.convert)
             self.threadpool.start(worker)
@@ -198,8 +214,12 @@ class DownloaderApp(QMainWindow):
             a.append(ytLink)
             # print the array
             item = s
-            self.ui.listWidget.addItem(item)
-            self.ui.ytLinkInput.setText("")
+            if "list" in ytLink:
+                self.ui.listWidget.addItem("[playlist]" + item)
+                self.ui.ytLinkInput.setText("")
+            else:
+                self.ui.listWidget.addItem(item)
+                self.ui.ytLinkInput.setText("")
 
     # on click of add it runs the playlistcheck in the worker thread and passes the data to addToList
     def add(self):
@@ -215,12 +235,15 @@ class DownloaderApp(QMainWindow):
             msg.setWindowTitle("Add Music")
             msg.setText("Please enter a link and press \"add\"")
             x = msg.exec_()
+
         else:
             x = self.warn()
             match x :
+                #ok
                 case 1024:
                     worker = Worker(self.convert)
                     self.threadpool.start(worker)
+                #no
                 case 65536:
                     pass
 
@@ -244,7 +267,7 @@ class DownloaderApp(QMainWindow):
                 cnt = 1
                 for i in a:
                     convert_format = btnStateArray
-                    subprocess.run(f"yt-dlp.exe -i -f ba -x --audio-format {convert_format} {i} -o \"{fname}\%(title)s.%(ext)s\"", shell=True)
+                    subprocess.run(f"yt-dlp.exe -i -f ba -x --audio-format {convert_format} " + f"\"{i}\"" + f" -o \"{fname}\%(title)s.%(ext)s\"", shell=True)
                     value = cnt * 100 / int(len(a))
                     self.ui.progressBar.setValue(int(value))
                     cnt += 1
